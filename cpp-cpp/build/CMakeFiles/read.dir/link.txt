@@ -1,0 +1,1 @@
+/usr/bin/c++  -O2 -std=c++11 -g CMakeFiles/read.dir/read.cpp.o CMakeFiles/read.dir/home/hyf/lab/GV/hyf/testShmQueue/test/shmqueue/shmmqueue.cpp.o CMakeFiles/read.dir/home/hyf/lab/GV/hyf/testShmQueue/test/shmqueue/shm_rwlock.cpp.o -o read 

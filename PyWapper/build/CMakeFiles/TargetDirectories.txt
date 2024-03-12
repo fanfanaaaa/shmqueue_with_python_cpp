@@ -1,0 +1,3 @@
+/home/hyf/lab/GV/hyf/testShmQueue/test/shmqueue/PyWapper/build/CMakeFiles/shmmqueue.dir
+/home/hyf/lab/GV/hyf/testShmQueue/test/shmqueue/PyWapper/build/CMakeFiles/edit_cache.dir
+/home/hyf/lab/GV/hyf/testShmQueue/test/shmqueue/PyWapper/build/CMakeFiles/rebuild_cache.dir
