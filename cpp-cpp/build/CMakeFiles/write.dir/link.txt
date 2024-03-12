@@ -1,1 +1,0 @@
-/usr/bin/c++  -O2 -std=c++11 -g CMakeFiles/write.dir/write.cpp.o CMakeFiles/write.dir/home/hyf/lab/GV/hyf/testShmQueue/test/shmqueue/shmmqueue.cpp.o CMakeFiles/write.dir/home/hyf/lab/GV/hyf/testShmQueue/test/shmqueue/shm_rwlock.cpp.o -o write 

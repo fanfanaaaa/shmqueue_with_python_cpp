@@ -1,4 +1,0 @@
-/home/hyf/lab/GV/hyf/testShmQueue/test/shmqueue/cpp-cpp/build/CMakeFiles/write.dir
-/home/hyf/lab/GV/hyf/testShmQueue/test/shmqueue/cpp-cpp/build/CMakeFiles/read.dir
-/home/hyf/lab/GV/hyf/testShmQueue/test/shmqueue/cpp-cpp/build/CMakeFiles/edit_cache.dir
-/home/hyf/lab/GV/hyf/testShmQueue/test/shmqueue/cpp-cpp/build/CMakeFiles/rebuild_cache.dir

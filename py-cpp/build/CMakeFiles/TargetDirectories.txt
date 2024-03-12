@@ -1,3 +1,0 @@
-/home/hyf/lab/GV/hyf/testShmQueue/test/shmqueue/py-cpp/build/CMakeFiles/read.dir
-/home/hyf/lab/GV/hyf/testShmQueue/test/shmqueue/py-cpp/build/CMakeFiles/edit_cache.dir
-/home/hyf/lab/GV/hyf/testShmQueue/test/shmqueue/py-cpp/build/CMakeFiles/rebuild_cache.dir
