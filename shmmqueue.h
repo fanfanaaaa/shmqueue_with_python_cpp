@@ -1,3 +1,10 @@
+//
+//  messagequeue_h
+//
+//  Created by 杜国超 on 17/6/22.
+//  Copyright © 2017年 杜国超. All rights reserved.
+//
+
 #ifndef messagequeue_h
 #define messagequeue_h
 

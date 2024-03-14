@@ -1,3 +1,9 @@
+//
+//  messagequeue_h
+//
+//  Created by 杜国超 on 17/6/22.
+//  Copyright © 2017年 杜国超. All rights reserved.
+//
 #include <string.h>
 #include <cstdlib>
 #include <stdio.h>
@@ -17,7 +23,7 @@ CMessageQueue::CMessageQueue(BYTE *pCurrAddr, eQueueModel module, key_t shmKey, 
     m_stMemTrunk->m_iEnd = 0;
     m_stMemTrunk->m_iShmKey = shmKey;
     m_stMemTrunk->m_iShmId = shmId;
-    m_stMemTrunk->m_iSize = (unsigned int)size;
+    m_stMemTrunk->m_iSize = size;
     m_stMemTrunk->m_eQueueModule = module;
     InitLock();
 }
@@ -25,8 +31,15 @@ CMessageQueue::CMessageQueue(BYTE *pCurrAddr)
 {
     m_pShm = (void*) pCurrAddr;
     m_pQueueAddr = pCurrAddr;
+    //m_stMemTrunk = new (m_pQueueAddr) stMemTrunk();
     m_stMemTrunk = static_cast<stMemTrunk *>(m_pShm);
     m_pQueueAddr += sizeof(stMemTrunk);
+    // m_stMemTrunk->m_iBegin = m_iBegin;
+    // m_stMemTrunk->m_iEnd = m_iEnd;
+    // m_stMemTrunk->m_iShmKey = shmKey;
+    // m_stMemTrunk->m_iShmId = shmId;
+    // m_stMemTrunk->m_iSize = (size_t)size;
+    // m_stMemTrunk->m_eQueueModule = module;
     InitLock();
 }
 
@@ -74,12 +87,12 @@ int CMessageQueue::SendMessage(BYTE *message, MESS_SIZE_TYPE length)
     BYTE *pTempSrc = (BYTE *) (&usInLength);
 
     //写入的时候我们在数据头插上数据的长度，方便准确取数据,每次写入一个字节可能会分散在队列的头和尾
-    unsigned int tmpEnd = m_stMemTrunk->m_iEnd;
+    size_t tmpEnd = m_stMemTrunk->m_iEnd;
     for (MESS_SIZE_TYPE i = 0; i < sizeof(usInLength); i++) {
         pTempDst[tmpEnd] = pTempSrc[i];  // 拷贝 Code 的长度
         tmpEnd = (tmpEnd + 1) & (m_stMemTrunk->m_iSize - 1);  // % 用于防止 Code 结尾的 idx 超出 codequeue
     }
-    unsigned int tmpLen = SHM_MIN(usInLength, m_stMemTrunk->m_iSize - tmpEnd);
+    size_t tmpLen = SHM_MIN(usInLength, m_stMemTrunk->m_iSize - tmpEnd);
     memcpy((void *) (&pTempDst[tmpEnd]), (const void *) message, (size_t) tmpLen);
     size_t tmpLastLen = length - tmpLen;
     if(tmpLastLen > 0)
@@ -101,7 +114,6 @@ int CMessageQueue::SendMessage(BYTE *message, MESS_SIZE_TYPE length)
 
 size_t CMessageQueue::GetMessage(BYTE *pOutCode)
 {
-    printf("HYF: GET MESSAGE 111\n");
     if (!pOutCode) {
         return (int) eQueueErrorCode::QUEUE_PARAM_ERROR;
     }
@@ -115,7 +127,6 @@ size_t CMessageQueue::GetMessage(BYTE *pOutCode)
     if (nTempMaxLength <= 0) {
         return (int) eQueueErrorCode::QUEUE_NO_MESSAGE;
     }
-    printf("HYF: GET MESSAGE\n");
     BYTE *pTempSrc = m_pQueueAddr;
     // 如果数据的最大长度不到sizeof(MESS_SIZE_TYPE)（存入数据时在数据头插入了数据的长度,长度本身）
     if (nTempMaxLength <= (int) sizeof(MESS_SIZE_TYPE)) {
@@ -191,7 +202,7 @@ int CMessageQueue::ReadHeadMessage(BYTE *pOutCode)
 
     MESS_SIZE_TYPE usOutLength;
     BYTE *pTempDst = (BYTE *) &usOutLength;   // 数据拷贝的目的地址
-    unsigned int tmpBegin = m_stMemTrunk->m_iBegin;
+    size_t tmpBegin = m_stMemTrunk->m_iBegin;
     //取出数据的长度
     for (MESS_SIZE_TYPE i = 0; i < sizeof(MESS_SIZE_TYPE); i++) {
         pTempDst[i] = pTempSrc[tmpBegin];
@@ -209,10 +220,10 @@ int CMessageQueue::ReadHeadMessage(BYTE *pOutCode)
 
     pTempDst = &pOutCode[0];  // 设置接收 Code 的地址
 
-    unsigned int tmpIndex = tmpBegin & (m_stMemTrunk->m_iSize - 1);
-    unsigned int tmpLen = SHM_MIN(usOutLength, m_stMemTrunk->m_iSize  - tmpIndex);
+    size_t tmpIndex = tmpBegin & (m_stMemTrunk->m_iSize - 1);
+    size_t tmpLen = SHM_MIN(usOutLength, m_stMemTrunk->m_iSize  - tmpIndex);
     memcpy(pTempDst,pTempSrc+ tmpBegin, tmpLen);
-    unsigned int tmpLast = usOutLength - tmpLen;
+    size_t tmpLast = usOutLength - tmpLen;
     if(tmpLast > 0)
     {
         memcpy(pTempDst + tmpLen, pTempSrc, tmpLast);
@@ -248,7 +259,7 @@ int CMessageQueue::DeleteHeadMessage()
 
     MESS_SIZE_TYPE usOutLength;
     BYTE *pTempDst = (BYTE *) &usOutLength;   // 数据拷贝的目的地址
-    unsigned int tmpBegin = m_stMemTrunk->m_iBegin;
+    size_t tmpBegin = m_stMemTrunk->m_iBegin;
     //取出数据的长度
     for (MESS_SIZE_TYPE i = 0; i < sizeof(MESS_SIZE_TYPE); i++) {
         pTempDst[i] = pTempSrc[tmpBegin];

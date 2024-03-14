@@ -102,13 +102,13 @@ int SendMessage(CMessageQueue* messageQueue, BYTE* message, size_t length){
     // 首先判断是否队列已满
     size_t size = GetFreeSize(messageQueue);
     if (size <= 0) {
-        printf("The queue is full enough to accommodate the additional data\n");
+        printf("The queue is full, can't write data anymore\n", size);
         return (int) QUEUE_NO_SPACE;
     }
 
     //空间不足
     if ((length + sizeof(MESS_SIZE_TYPE)) > size) {
-        printf("The queue size is not large enough to accommodate the data size\n");
+        printf("The queue space is not enough to write data\n");
         return (int) QUEUE_NO_SPACE;
     }
 
@@ -168,7 +168,7 @@ int GetMessage(CMessageQueue* messageQueue, BYTE* pOutCode){
 
     MESS_SIZE_TYPE usOutLength;
     BYTE *pTempDst = (BYTE *) &usOutLength;   // 数据拷贝的目的地址
-    unsigned int tmpBegin = messageQueue->m_stMemTrunk->m_iBegin;
+    size_t tmpBegin = messageQueue->m_stMemTrunk->m_iBegin;
     //取出数据的长度
     for (MESS_SIZE_TYPE i = 0; i < sizeof(MESS_SIZE_TYPE); i++) {
         pTempDst[i] = pTempSrc[tmpBegin];
@@ -186,9 +186,9 @@ int GetMessage(CMessageQueue* messageQueue, BYTE* pOutCode){
     }
 
     pTempDst = &pOutCode[0];  // 设置接收 Code 的地址
-    unsigned int tmpLen = SHM_MIN(usOutLength, messageQueue->m_stMemTrunk->m_iSize  - tmpBegin);
+    size_t tmpLen = SHM_MIN(usOutLength, messageQueue->m_stMemTrunk->m_iSize  - tmpBegin);
     memcpy(&pTempDst[0],&pTempSrc[tmpBegin], tmpLen);
-    unsigned int tmpLast = usOutLength - tmpLen;
+    size_t tmpLast = usOutLength - tmpLen;
     if(tmpLast > 0)
     {
         memcpy(&pTempDst[tmpLen], pTempSrc, tmpLast);
@@ -226,7 +226,7 @@ int ReadHeadMessage(CMessageQueue* messageQueue, BYTE* pOutCode){
 
     MESS_SIZE_TYPE usOutLength;
     BYTE *pTempDst = (BYTE *)&usOutLength; // 数据拷贝的目的地址
-    unsigned int tmpBegin = messageQueue->m_stMemTrunk->m_iBegin;
+    size_t tmpBegin = messageQueue->m_stMemTrunk->m_iBegin;
 
     // 取出数据的长度
     for (MESS_SIZE_TYPE i = 0; i < sizeof(MESS_SIZE_TYPE); i++) {
@@ -245,11 +245,11 @@ int ReadHeadMessage(CMessageQueue* messageQueue, BYTE* pOutCode){
 
     pTempDst = &pOutCode[0]; // 设置接收 Code 的地址
 
-    unsigned int tmpIndex = tmpBegin & (messageQueue->m_stMemTrunk->m_iSize - 1);
-    unsigned int tmpLen = SHM_MIN(usOutLength, messageQueue->m_stMemTrunk->m_iSize - tmpIndex);
+    size_t tmpIndex = tmpBegin & (messageQueue->m_stMemTrunk->m_iSize - 1);
+    size_t tmpLen = SHM_MIN(usOutLength, messageQueue->m_stMemTrunk->m_iSize - tmpIndex);
     memcpy(pTempDst, pTempSrc + tmpBegin, tmpLen);
 
-    unsigned int tmpLast = usOutLength - tmpLen;
+    size_t tmpLast = usOutLength - tmpLen;
 
     if (tmpLast > 0) {
         memcpy(pTempDst + tmpLen, pTempSrc, tmpLast);
@@ -282,7 +282,7 @@ int DeleteHeadMessage(CMessageQueue *messageQueue) {
 
     MESS_SIZE_TYPE usOutLength;
     BYTE *pTempDst = (BYTE *)&usOutLength; // 数据拷贝的目的地址
-    unsigned int tmpBegin = messageQueue->m_stMemTrunk->m_iBegin;
+    size_t tmpBegin = messageQueue->m_stMemTrunk->m_iBegin;
 
     // 取出数据的长度
     for (MESS_SIZE_TYPE i = 0; i < sizeof(MESS_SIZE_TYPE); i++) {
@@ -305,6 +305,7 @@ int DeleteHeadMessage(CMessageQueue *messageQueue) {
 }
 
 void PrintTrunk(CMessageQueue* messageQueue){
+    //TODO, revise git
     printf("Mem trunk address 0x%p,shmkey %d ,shmid %d, size %zu, begin %zu, end %zu, queue module %d \n",
             messageQueue->m_stMemTrunk,
             messageQueue->m_stMemTrunk->m_iShmKey,

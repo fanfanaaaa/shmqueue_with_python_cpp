@@ -87,8 +87,7 @@ int main()
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
     // 计算接收速率
     double receive_rate = static_cast<double>(len) / (duration.count() / 1000.0); 
-    printf("Receive Rate: %f bytes per second\n", receive_rate);
     messQueue->PrintTrunk();
 
-    //std::cout << "Receive Rate: " << receive_rate << " bytes per second" << std::endl;
+    std::cout << "Receive Rate: " << receive_rate << " bytes per second" << std::endl;
 }

@@ -123,9 +123,11 @@ class ShareMemoryQueue:
             self.message_queue_ptr = share.GetInstance(shmkey, queuesize, queueModule)
     
     def write(self, batch):
-        bytes_batch = batch.tobytes()
+        #bytes_batch = batch.tobytes()
+        bytes_batch = batch
         data_ptr = ctypes.cast(ctypes.create_string_buffer(bytes_batch), ctypes.POINTER(ctypes.c_ubyte))
-        share.SendMessage(self.message_queue_ptr, data_ptr, len(bytes_batch))
+        res = share.SendMessage(self.message_queue_ptr, data_ptr, len(bytes_batch))
+        return res
     
     def get(self):
         buffer_size = 100  # Replace with the desired buffer size

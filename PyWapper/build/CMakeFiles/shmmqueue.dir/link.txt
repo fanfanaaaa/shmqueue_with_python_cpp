@@ -1,0 +1,1 @@
+/usr/bin/cc -fPIC -shared -Wl,-soname,libshmmqueue.so -o libshmmqueue.so CMakeFiles/shmmqueue.dir/shmmqueueWapper.c.o CMakeFiles/shmmqueue.dir/shm_rwlockWapper.c.o 
