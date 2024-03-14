@@ -47,13 +47,13 @@ typedef enum {
 } enShmModule;
 
 typedef struct CACHELINE_ALIGN{
-    volatile unsigned int m_iBegin;
+    volatile size_t m_iBegin;
     char __cache_padding1__[CACHE_LINE_SIZE];
-    volatile unsigned int m_iEnd;
+    volatile size_t m_iEnd;
     char __cache_padding2__[CACHE_LINE_SIZE];
     int m_iShmKey;
     char __cache_padding3__[CACHE_LINE_SIZE];
-    unsigned int m_iSize;
+    size_t m_iSize;
     char __cache_padding4__[CACHE_LINE_SIZE];
     int m_iShmId;
     char __cache_padding5__[CACHE_LINE_SIZE];
@@ -78,9 +78,9 @@ int ReadHeadMessage(CMessageQueue* messageQueue, BYTE* pOutCode);
 int DeleteHeadMessage(CMessageQueue* messageQueue);
 void PrintTrunk(CMessageQueue* messageQueue);
 
-unsigned int GetFreeSize(CMessageQueue* messageQueue);
-unsigned int GetDataSize(CMessageQueue* messageQueue);
-unsigned int GetQueueLength(CMessageQueue* messageQueue);
+size_t GetFreeSize(CMessageQueue* messageQueue);
+size_t GetDataSize(CMessageQueue* messageQueue);
+size_t GetQueueLength(CMessageQueue* messageQueue);
 void InitLock(CMessageQueue* messageQueue);
 int IsBeginLock(CMessageQueue* messageQueue);
 int IsEndLock(CMessageQueue* messageQueue);

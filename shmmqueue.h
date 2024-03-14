@@ -1,10 +1,3 @@
-//
-//  messagequeue_h
-//
-//  Created by 杜国超 on 17/6/22.
-//  Copyright © 2017年 杜国超. All rights reserved.
-//
-
 #ifndef messagequeue_h
 #define messagequeue_h
 
@@ -94,7 +87,7 @@ public:
      * @param pOutCode
      * @return message  > 0 data len ,or < 0 error code
      * */
-    int GetMessage(BYTE *pOutCode);
+    size_t GetMessage(BYTE *pOutCode);
     /**
      * 从mess queue 头部读取一个消息，从队列中copy走了一个消息包没有改变mess queue
      * @param pOutCode
@@ -116,11 +109,11 @@ public:
     void PrintTrunk();
 private:
     //获取空闲区大小
-    unsigned int GetFreeSize();
+    size_t GetFreeSize();
     //获取数据长度
-    unsigned int GetDataSize();
+    size_t GetDataSize();
     //获取存储数据的内存取长度（空闲的和占用的）
-    unsigned int GetQueueLength();
+    size_t GetQueueLength();
     //初始化lock
     void InitLock();
     //是否要对读端上锁
@@ -162,13 +155,13 @@ private:
          * 2) 在变量之间插入一个64字节(cache line的长度)的变量(没有实际的计算意义),但是可以保证两个变量不会同时在一个cache line里,防止不同的
          *    进程或者线程同时访问在一个cache line里不同的变量产生false sharing,
          */
-        volatile unsigned int m_iBegin;
+        volatile size_t m_iBegin;
         char __cache_padding1__[CACHE_LINE_SIZE];
-        volatile unsigned int m_iEnd;
+        volatile size_t m_iEnd;
         char __cache_padding2__[CACHE_LINE_SIZE];
         int m_iShmKey;
         char __cache_padding3__[CACHE_LINE_SIZE];
-        unsigned int m_iSize;
+        size_t m_iSize;
         char __cache_padding4__[CACHE_LINE_SIZE];
         int m_iShmId;
         char __cache_padding5__[CACHE_LINE_SIZE];
