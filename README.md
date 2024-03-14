@@ -60,3 +60,5 @@ $ make
 
 ![py-write](./assets/py_cpp_write.png)
 ![cpp-read](./assets/py_cpp_read.png)
+
+Reference：https://github.com/DGuco/shmqueue
